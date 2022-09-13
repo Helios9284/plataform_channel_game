@@ -42,7 +42,7 @@ class _GameWidgetState extends State<GameWidget> {
                   Container(
                     width: ScreenUtil().setWidth(150),
                     height: ScreenUtil().setHeight(550),
-                    color: colorMediumBlue2,
+                    color: colorMidiumBlue2,
                   ),
                 ],
               ),
