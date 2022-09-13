@@ -4,14 +4,14 @@ import 'package:plataform_channel_game/constants/colors.dart';
 import 'package:plataform_channel_game/constants/styles.dart';
 import 'package:plataform_channel_game/models/creator.dart';
 
-class GameWindget extends StatefulWidget {
-  const GameWindget({Key? key}) : super(key: key);
+class GameWidget extends StatefulWidget {
+  const GameWidget({Key? key}) : super(key: key);
 
   @override
-  State<GameWindget> createState() => _GameWindget();
+  State<GameWidget> createState() => _GameWidgetState();
 }
 
-class _GameWindget extends State<GameWindget> {
+class _GameWidgetState extends State<GameWidget> {
   Creator? creator;
   bool minhaVez = false;
 
@@ -61,11 +61,10 @@ class _GameWindget extends State<GameWindget> {
                       ])
                     : InkWell(
                         child: Text(
-                          minhaVez == true
-                              ? "Faça sua jogada"
-                              : "Aguarde sua vez",
-                          //g
-                        ),
+                            minhaVez == true
+                                ? "Faça sua jogada"
+                                : "Aguarde sua vez",
+                            style: textStyle36),
                       )
               ],
             )),
@@ -78,9 +77,40 @@ class _GameWindget extends State<GameWindget> {
   Widget buildButton(String label, bool owner) => Container(
         width: ScreenUtil().setWidth(300),
         child: ElevatedButton(
-            child: Padding(
-                padding: const EdgeInsets.all(8),
-                child: Text(label, style: textStyle36)),
-            onPressed: () {}),
+          child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: Text(label, style: textStyle36)),
+          onPressed: () {
+            createGame(owner);
+          },
+        ),
       );
+
+  Future createGame(bool owner) async {
+    TextEditingController controller = TextEditingController();
+    return showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text("Qual o nome do jogo?"),
+            content: TextField(controller: controller),
+            actions: [
+              ElevatedButton(
+                  child: const Text("Jogar"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    _sendAction('subscribe', {'channel': controller.text});
+                    //.then((value))
+                    setState(() {
+                      creator = Creator(owner, controller.text);
+                      minhaVez = owner;
+                    });
+                  })
+            ],
+          );
+        });
+  }
+
+  Future _sendAction(String action, Map<String, dynamic> arguments) async {}
 }
